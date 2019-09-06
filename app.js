@@ -35,18 +35,19 @@ const updateRacerStatus = (racer, rank) => {
   // find status field
   const racerStatus = document.getElementById(`${racer}-status`);
 
+  // Declare winner html
+  const winnerHTML = '<div class="ui green tag label">We have a winner</div>';
+
   // Updat status
   racerStatus.innerHTML = `<strong>Status:</strong> 
                 <span class="ui green basic label">Finished 
                     <span class="ui green label circular">
                         ${rank}
                     </span>
-                </span>`;
-};
-
-// Announce race winnr
-const displayWinner = () => {
-  alert(`Winner of the race is ${state.winner}`);
+                    
+                </span>
+                
+                ${rank === 1 ? winnerHTML : ""}`;
 };
 
 // Initialize application
@@ -58,8 +59,8 @@ const init = async () => {
   };
 
   // Get dom elements
-  let raceContainer = document.getElementsByClassName("race-container")[0];
-  let raceRestartBtn = document.getElementById("restart-button");
+  const raceContainer = document.getElementsByClassName("race-container")[0];
+  const raceRestartBtn = document.getElementById("restart-button");
 
   raceRestartBtn.classList.add("disabled");
 
@@ -67,15 +68,15 @@ const init = async () => {
   raceRestartBtn.addEventListener("click", init);
 
   // Build raeer HTML
-  let listHtml = returnValues.sort().map(val => renderRacer(val));
+  const listHtml = returnValues.sort().map(val => renderRacer(val));
 
   // Append all HTML to DOM
   raceContainer.innerHTML = listHtml.join("");
 
   // Call all promises Repalce forEach with .map to return an array of Promises
-  let servicePromises = services.map(async (service, index) => {
+  const servicePromises = services.map(async (service, index) => {
     // Return promise
-    let racer = await service();
+    const racer = await service();
 
     // Save winner
     if (state.rank === 0) state.winner = racer;
