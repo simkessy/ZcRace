@@ -18,7 +18,7 @@ const services = returnValues.map(createService);
 // end screener code
 
 // Build rows dynamically
-const renderRacer = (racer, status = "Pending") => {
+const renderRacer = (racer, status = "Pending...") => {
   return `<div class="item">
                 <img class="ui avatar image tiny" src="https://i.ytimg.com/vi/3NENtrX31VI/hqdefault.jpg" />
                 <div class="content">
