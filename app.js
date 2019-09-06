@@ -18,13 +18,32 @@ const services = returnValues.map(createService);
 // end screener code
 
 // Build rows dynamically
-const renderRacer = (racer, status = "Pending...") => {
+const renderRacer = (racer, status = "Pending...", rank) => {
+  const defaultStatus = `<strong>Status:</strong> <span class="ui red basic label">${status}</span>`;
+
+  let finishTime = null;
+
+  if (rank) {
+    const today = new Date();
+    finishTime =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  }
+
+  const resultStatus = `<strong>Status:</strong> 
+                        <span class="ui green basic label">Finised at: 
+                            <span class="ui green label circular">
+                                ${finishTime}
+                            </span>
+                        </span>`;
+
+  const statusHTML = rank ? resultStatus : defaultStatus;
+
   return `<div class="item">
                 <img class="ui avatar image tiny" src="https://i.ytimg.com/vi/3NENtrX31VI/hqdefault.jpg" />
                 <div class="content">
                     <h3 class="header">${racer}</h3>
                     <div id="${racer}-status">
-                        <strong>Status:</strong> <span class="ui red basic label">${status}</span>
+                        ${statusHTML}
                     </div>
                 </div>
             </div>`;
@@ -44,9 +63,7 @@ const updateRacerStatus = (racer, rank) => {
                     <span class="ui green label circular">
                         ${rank}
                     </span>
-                    
                 </span>
-                
                 ${rank === 1 ? winnerHTML : ""}`;
 };
 
@@ -59,19 +76,24 @@ const init = async () => {
   };
 
   // Get dom elements
-  const raceContainer = document.getElementsByClassName("race-container")[0];
+  const racersContainer = document.getElementById("racers-container");
+  const resultsContainer = document.getElementById("results-container");
   const raceRestartBtn = document.getElementById("restart-button");
 
+  // Disable button on first load
   raceRestartBtn.classList.add("disabled");
 
   // Reset the container - important for restart
+
+  // Set button event handler
   raceRestartBtn.addEventListener("click", init);
 
   // Build raeer HTML
   const listHtml = returnValues.sort().map(val => renderRacer(val));
 
   // Append all HTML to DOM
-  raceContainer.innerHTML = listHtml.join("");
+  resultsContainer.innerHTML = "";
+  racersContainer.innerHTML = listHtml.join("");
 
   // Call all promises Repalce forEach with .map to return an array of Promises
   const servicePromises = services.map(async (service, index) => {
@@ -86,6 +108,9 @@ const init = async () => {
 
     // Update racer status
     updateRacerStatus(racer, state.rank);
+
+    // Add racers to results as they finish
+    resultsContainer.innerHTML += renderRacer(racer, "Finished", state.rank);
 
     // Return value
     return racer;
