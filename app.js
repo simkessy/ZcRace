@@ -83,12 +83,10 @@ const init = async () => {
   // Disable button on first load
   raceRestartBtn.classList.add("disabled");
 
-  // Reset the container - important for restart
-
   // Set button event handler
   raceRestartBtn.addEventListener("click", init);
 
-  // Build raeer HTML
+  // Build racer HTML
   const listHtml = returnValues.sort().map(val => renderRacer(val));
 
   // Append all HTML to DOM
